@@ -1,0 +1,56 @@
+buildscript {
+}
+
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow' version '1.2.2'
+}
+
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'com.github.johnrengelman.shadow'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+ext {
+    dropwizardVersion = '0.9.1'
+    lombokVersion = '1.16.6'
+    junitVersion = '4.12'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile "io.dropwizard:dropwizard-core:$dropwizardVersion"
+    compile "io.dropwizard:dropwizard-client:$dropwizardVersion"
+    compile "io.dropwizard:dropwizard-jdbi:$dropwizardVersion"
+    compile "io.dropwizard:dropwizard-migrations:$dropwizardVersion"
+
+    compile "org.projectlombok:lombok:$lombokVersion"
+
+    testCompile "junit:junit:$junitVersion"
+}
+
+test {
+    maxParallelForks = 5
+    forkEvery = 5
+    exclude '**/functional/**'
+    exclude '**/deploygate/**'
+}
+
+ext.mainClassName = 'com.herzog.api.IdentificationApplication'
+
+shadowJar {
+    mergeServiceFiles()
+    exclude 'META-INF/*.DSA'
+    exclude 'META-INF/*.RSA'
+    manifest {
+        attributes("Main-Class": mainClassName,
+                "Implementation-Version": version)
+    }
+    archiveName = "root.jar"
+    destinationDir = projectDir
+}

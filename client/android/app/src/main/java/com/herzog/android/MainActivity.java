@@ -3,6 +3,7 @@ package com.herzog.android;
 import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -41,11 +42,16 @@ public class MainActivity extends Activity {
 		int id = item.getItemId();
 
 		//noinspection SimplifiableIfStatement
-		if (id == R.id.action_settings) {
-			return true;
+		switch (id) {
+			case R.id.action_settings:
+				return true;
+			case R.id.action_snap:
+				final Intent intent = new Intent(this, CameraActivity.class);
+				startActivity(intent);
+				return true;
+			default:
+				return super.onOptionsItemSelected(item);
 		}
-
-		return super.onOptionsItemSelected(item);
 	}
 
 	/**
@@ -57,8 +63,11 @@ public class MainActivity extends Activity {
 		}
 
 		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container,
-								 Bundle savedInstanceState) {
+		public View onCreateView(
+				LayoutInflater inflater,
+				ViewGroup container,
+				Bundle savedInstanceState
+		) {
 			View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 			return rootView;
 		}

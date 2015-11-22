@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/info_preview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/info_preview_sample"/>
+
+    <Button
+        android:id="@+id/button_sample"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/info_preview"
+        android:text="@string/camera_preview_sample" />
+
+    <TextView
+        android:id="@+id/info_resize"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/button_sample"
+        android:text="@string/info_resize_sample"/>
+
+    <Button
+        android:id="@+id/button_test"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/info_resize"
+        android:text="@string/camera_preview_test" />
+
+    <TextView
+        android:id="@+id/info_intent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/button_test"
+        android:text="@string/info_capture_intent"/>
+
+    <Button
+        android:id="@+id/button_intent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/info_intent"
+        android:text="@string/capture_with_intent" />
+
+    <TextView
+        android:id="@+id/info_zxing"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/button_intent"
+        android:text="@string/info_zxing"/>
+
+    <Button
+        android:id="@+id/button_zxing"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/info_zxing"
+        android:text="@string/start_zxing" />
+
+    <!-- this view we can use to put the captured result image on display -->
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_below="@id/button_intent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</RelativeLayout>

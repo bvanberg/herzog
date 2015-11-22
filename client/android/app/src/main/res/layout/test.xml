@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <Spinner
+        android:id="@+id/spinner_size"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"/>
+    <Spinner
+        android:id="@+id/spinner_camera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"/>
+    <!-- have a surfaceview added in this nested layout instead so we have more control
+    over bounds and so -->
+    <FrameLayout
+        android:id="@+id/surfaceView"
+        android:layout_below="@+id/spinner_camera"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/border"
+        android:padding="2dp"
+        android:layout_margin="20dp"/>
+</RelativeLayout>

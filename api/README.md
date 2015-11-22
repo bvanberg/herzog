@@ -1,8 +1,18 @@
 ## Endpoints
 
-POST `/identification` -- Accepts a binary payload for processing.
+### POST `/identification` -- Accepts a binary payload for processing .
 
-GET `/identification/photos` -- Returns all photos in the photo store.
+### GET `/identification/photos`
+
+Returns photos in the photo store in a paging manner. Currently it is ghetto paging with a `page` and `pageSize` query parameter available and very little validation of these parameters. 
+
+Example usage: 
+
+`http://localhost:8080/identification/photos`
+
+`http://localhost:8080/identification/photos?page=4`
+
+`http://localhost:8080/identification/photos?page=4&pageSize=3`
 
 ## Run it
 From the project root `herzog/api`

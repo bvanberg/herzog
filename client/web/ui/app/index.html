@@ -1,0 +1,50 @@
+<!doctype html>
+<html class="no-js" lang="en" data-ng-app="App">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Herzog</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="assets/css/bootstrap.css">
+  <style>
+    div.navbar-collapse.collapse {
+      display: block;
+      overflow: hidden;
+      max-height: 0px;
+      -webkit-transition: max-height .3s ease;
+      -moz-transition: max-height .3s ease;
+      -o-transition: max-height .3s ease;
+      transition: max-height .3s ease;
+    }
+    div.navbar-collapse.collapse.in {
+      max-height: 2000px;
+    }
+  </style>
+
+  <!-- keep modernizr in the head and after all other css includes -->
+  <script src="vendor/modernizr-2.8.3.min.js"></script>
+</head>
+<body>
+  <div ui-view="header"></div>
+  <div ui-view="content"></div>
+  <div ui-view="footer"></div>
+
+  <!-- ------------------------- vendor libs ------------------------- -->
+  <script src="vendor/angular.min.js"></script>
+  <script src="vendor/angular-ui-router.min.js"></script>
+
+  <script src="vendor/ui-bootstrap-tpls.min.js"></script>
+
+  <!-- ------------------------- app ------------------------- -->
+  <!-- note for hiding data until page load: https://docs.angularjs.org/api/ng/directive/ngCloak -->
+  <script src="app.js"></script>
+
+  <!-- ------------------------- page controllers ------------------------- -->
+  <script src="views/pages/surf/surf_ctrl.js"></script>
+  <script src="views/modules/header/header_ctrl.js"></script>
+
+  <!-- ------------------------- modual controllers ------------------------- -->
+
+</body>
+</html>

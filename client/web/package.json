@@ -1,0 +1,26 @@
+{
+  "name": "herzog.jackbyrd.com",
+  "version": "1.0.0",
+  "description": "Herzog App",
+  "main": "server.js",
+  "author": "LB",
+  "scripts": {
+  },
+  "dependencies": {
+    "bluebird": "^2.9.34",
+    "boom": "^2.8.0",
+    "config": "^1.15.0",
+    "hapi": "^8.2.0",
+    "hoek": "^2.14.0",
+    "joi": "^6.5.0",
+    "lout": "^6.2.3",
+    "moment": "^2.10.6",
+    "path": "^0.11.14",
+    "request": "^2.60.0",
+    "rewire": "^2.3.4"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-zip": "^3.0.2"
+  }
+}

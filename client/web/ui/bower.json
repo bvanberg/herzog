@@ -1,0 +1,25 @@
+{
+  "name": "Herzog App",
+  "version": "0.0.1",
+  "dependencies": {
+    "modernizr": "latest",
+    "angular-bootstrap": "latest",
+    "angular": "latest",
+    "angular-ui-router": "latest",
+    "ui-bootstrap": "latest"
+  },
+  "ignore": [
+    "**/.*",
+    ".bowerrc",
+    "bower.json",
+    "package.json",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "private": true,
+  "resolutions": {
+    "angular": "1.4.1"
+  }
+}

@@ -2,10 +2,12 @@ package com.herzog.api;
 
 import com.herzog.api.photo.store.Photo;
 import com.herzog.api.photo.store.PhotoStore;
+import io.dropwizard.jersey.params.IntParam;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -31,13 +33,24 @@ public class IdentificationResource {
         photoStore = PhotoStore.builder().build();
     }
 
+//    @GET
+//    @Path("photos")
+//    public PhotoList fetch() {
+//        final Collection<Photo> notifications = photoStore.getPhotoList();
+//        if (notifications != null) {
+//            final PhotoList photoList = PhotoList.builder().photos(notifications).build();
+//            return photoList;
+//        }
+//        throw new WebApplicationException(Response.Status.NOT_FOUND);
+//    }
+
     @GET
     @Path("photos")
-    public PhotoList fetch() {
-        final Collection<Photo> notifications = photoStore.getPhotoList();
+    public PhotoList fetch(@QueryParam("page") @DefaultValue("1") IntParam page,
+                           @QueryParam("pageSize") @DefaultValue("10") IntParam pageSize) {
+        final Collection<Photo> notifications = photoStore.getPhotoPage(page.get(), pageSize.get());
         if (notifications != null) {
-            final PhotoList photoList = PhotoList.builder().photos(notifications).build();
-            return photoList;
+            return PhotoList.builder().photos(notifications).build();
         }
         throw new WebApplicationException(Response.Status.NOT_FOUND);
     }

@@ -10,4 +10,5 @@ import lombok.Getter;
 @Getter
 public class Photo {
     private final String url;
+    private final long id = System.nanoTime();
 }

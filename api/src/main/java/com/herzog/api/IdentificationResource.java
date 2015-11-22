@@ -1,7 +1,7 @@
 package com.herzog.api;
 
-import com.codahale.metrics.annotation.Timed;
-import com.google.common.base.Optional;
+import com.herzog.api.photo.store.Photo;
+import com.herzog.api.photo.store.PhotoStore;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,33 +11,35 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.Collection;
 
 @Path("/identification")
 @Produces(MediaType.APPLICATION_JSON)
 @Slf4j
 public class IdentificationResource {
-    private final String template;
-    private final String defaultName;
-    private final AtomicLong counter;
 
-    public IdentificationResource(String template, String defaultName) {
-        this.template = template;
-        this.defaultName = defaultName;
-        this.counter = new AtomicLong();
+    private final PhotoStore photoStore;
+
+    public IdentificationResource() {
+        photoStore = PhotoStore.builder().build();
     }
 
     @GET
-    @Timed
-    public Identification sayHello(@QueryParam("name") Optional<String> name) {
-        final String value = String.format(template, name.or(defaultName));
-        return new Identification(counter.incrementAndGet(), value);
+    @Path("photos")
+    public PhotoList fetch() {
+        final Collection<Photo> notifications = photoStore.getPhotoList();
+        if (notifications != null) {
+            final PhotoList photoList = PhotoList.builder().photos(notifications).build();
+            return photoList;
+        }
+        throw new WebApplicationException(Response.Status.NOT_FOUND);
     }
 
     @POST

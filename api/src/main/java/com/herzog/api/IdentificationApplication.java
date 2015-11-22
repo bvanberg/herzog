@@ -23,8 +23,6 @@ public class IdentificationApplication extends Application<IdentificationConfigu
     public void run(IdentificationConfiguration configuration,
                     Environment environment) {
         final IdentificationResource resource = new IdentificationResource(
-                configuration.getTemplate(),
-                configuration.getDefaultName()
         );
         environment.jersey().register(resource);
     }

@@ -1,4 +1,9 @@
-## Run it 
+## Endpoints
+
+POST `/identification` -- Accepts a binary payload for processing.
+GET `/identification/photos` -- Returns all photos in the photo store.
+
+## Run it
 From the project root `herzog/api`
 
 `./gradlew clean build shadow; java -jar root.jar server dev.yaml`

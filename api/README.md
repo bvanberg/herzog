@@ -1,6 +1,7 @@
 ## Endpoints
 
 POST `/identification` -- Accepts a binary payload for processing.
+
 GET `/identification/photos` -- Returns all photos in the photo store.
 
 ## Run it

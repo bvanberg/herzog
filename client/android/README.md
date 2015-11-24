@@ -1,5 +1,7 @@
 # CameraPreviewSample
 
+https://github.com/hanscappelle/CameraPreviewSample
+
 The original project demonstrates how to implement a camera preview in android step-by-step.
 
 **Update: This fork focuses more on layout, code quality and graphical improvements.

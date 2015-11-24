@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">CameraPreviewSample</string>
+    <string name="app_name">Herzog</string>
     <string name="camera_preview_sample">Camera Preview Sample</string>
     <string name="camera_preview_test">Camera Preview Test</string>
-    <string name="capture_with_intent">Capture by Intent</string>
+    <string name="capture_with_intent">Capture Photo</string>
     <string name="start_zxing">Start Zxing</string>
 
     <string name="info_preview_sample">An near fullscreen camera preview example</string>

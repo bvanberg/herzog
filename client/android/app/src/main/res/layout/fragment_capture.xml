@@ -24,7 +24,7 @@
         android:layout_below="@+id/text_info"
         android:layout_margin="20dp" />
 
-    <net.pikanji.camerapreviewsample.zxing.ViewfinderView
+    <com.herzog.android.zxing.ViewfinderView
         android:id="@+id/viewfinder_view"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" />

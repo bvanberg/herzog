@@ -56,7 +56,7 @@ public class IdentificationResource {
     }
 
     @POST
-    @Consumes("application/octet-stream")
+    @Consumes("binary/octet-stream")
     public Response putFile(@Context HttpServletRequest request,
                             @QueryParam("fileId") long fileId,
                             InputStream fileInputStream) throws Throwable {

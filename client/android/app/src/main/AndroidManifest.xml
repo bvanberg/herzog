@@ -1,32 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="com.herzog.android"
-      android:versionCode="1"
-      android:versionName="1.0.0">
+		  package="com.herzog.android"
+		  android:versionCode="1"
+		  android:versionName="0.0.1">
 
-    <application android:icon="@drawable/ic_launcher"
-        android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
-        android:label="@string/app_name">
-        <activity android:name=".MainActivity"
-                  android:label="@string/app_name">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".CameraPreviewSampleActivity" android:label="@string/app_name" />
-        <activity android:name=".CameraPreviewTestActivity" android:label="@string/app_name" />
-        <activity android:name=".zxing.CaptureActivity" android:label="@string/app_name" />
-    </application>
+	<application android:icon="@drawable/ic_launcher"
+				 android:theme="@style/Theme.AppCompat.Light.DarkActionBar"
+				 android:label="@string/app_name">
+		<activity android:name=".MainActivity"
+				  android:label="@string/app_name">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN"/>
+				<category android:name="android.intent.category.LAUNCHER"/>
+			</intent-filter>
+		</activity>
+		<activity android:name=".CameraPreviewSampleActivity" android:label="@string/app_name"/>
+		<activity android:name=".CameraPreviewTestActivity" android:label="@string/app_name"/>
+		<activity android:name=".zxing.CaptureActivity" android:label="@string/app_name"/>
+	</application>
 
-    <!-- camera permission is required to use camera hardware -->
-    <uses-permission android:name="android.permission.CAMERA" />
+	<!-- camera permission is required to use camera hardware -->
+	<uses-permission android:name="android.permission.CAMERA"/>
+	<uses-permission android:name="android.permission.INTERNET"/>
 
-    <!-- if we want to limit this app (visibility in play store) to devices with a camera use this
-    note the required false since required true would block Nexus 7 devices with only a front camera
-    -->
-    <uses-feature android:name="android.hardware.camera"
-        android:required="false" />
+	<!-- if we want to limit this app (visibility in play store) to devices with a camera use this
+	note the required false since required true would block Nexus 7 devices with only a front camera
+	-->
+	<uses-feature android:name="android.hardware.camera" android:required="false"/>
 
 
 </manifest>

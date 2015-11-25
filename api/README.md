@@ -1,3 +1,14 @@
+Project Dependencies and Configuration
+---
+A few notes on IntelliJ configuration for this project that'll be required for annotations to be processed properly and make IntelliJ happy.
+
+#### Enable Annotation Processing
+	Preferences --> Build, Execution, Deployment --> Annotation Processors (check Enable annotation processing checkbox).
+	
+#### Plugins
+
+Download and Install the Lombok Plugin
+
 ## Endpoints
 
 ### POST `/identification` -- Accepts a binary payload for processing .

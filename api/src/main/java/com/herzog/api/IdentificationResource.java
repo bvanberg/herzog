@@ -1,19 +1,14 @@
 package com.herzog.api;
 
+import com.google.inject.Inject;
+import com.herzog.api.service.S3Service;
 import com.herzog.api.photo.store.Photo;
 import com.herzog.api.photo.store.PhotoStore;
 import io.dropwizard.jersey.params.IntParam;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -28,9 +23,12 @@ import java.util.Collection;
 public class IdentificationResource {
 
     private final PhotoStore photoStore;
+	private final S3Service s3Service;
 
-    public IdentificationResource() {
-        photoStore = PhotoStore.builder().build();
+	@Inject
+    public IdentificationResource(final S3Service s3Service) {
+		this.s3Service = s3Service;
+		photoStore = PhotoStore.builder().build();
     }
 
 //    @GET

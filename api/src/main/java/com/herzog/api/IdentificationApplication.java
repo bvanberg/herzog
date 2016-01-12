@@ -14,7 +14,7 @@ public class IdentificationApplication extends Application<IdentificationConfigu
 
 	@Override
 	public String getName() {
-		return "hello-world";
+		return "herzog web service api";
 	}
 
 	@Override

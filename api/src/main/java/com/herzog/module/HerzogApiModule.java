@@ -2,7 +2,6 @@ package com.herzog.module;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.google.inject.AbstractModule;
 import com.google.inject.Binder;
 import com.google.inject.Module;
 import com.google.inject.Provides;

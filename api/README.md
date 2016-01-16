@@ -26,9 +26,12 @@ Example usage:
 `http://localhost:8080/identification/photos?page=4&pageSize=3`
 
 ## Run it
+
 From the project root `herzog/api`
 
-`./gradlew clean build shadow; java -jar root.jar server dev.yaml`
+`./gradlew clean build shadow; java -jar root.jar server dev.yaml -Daws.accessKeyId={your-jackbyrd-aws-access-key} -Daws.secretKey={your-jackbyrd-aws-secret-key}`
+
+
 
 ## Test it
 `http://localhost:8080/identification?name=herzog`

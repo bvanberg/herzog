@@ -12,8 +12,8 @@ import java.io.InputStream;
 
 public class S3Service {
 
-	private AmazonS3 s3Client;
-	private String photoBucket;
+	private final AmazonS3 s3Client;
+	private final String photoBucket;
 
 	@Inject
 	public S3Service(

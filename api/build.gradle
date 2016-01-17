@@ -17,7 +17,7 @@ ext {
     dropwizardVersion = '0.9.1'
     dropwizardGuiceVersion = '0.8.4.0'
     lombokVersion = '1.16.6'
-    awsSdkVersion = '1.10.20'
+    awsS3SdkVersion = '1.10.47'
     junitVersion = '4.12'
 }
 
@@ -35,7 +35,7 @@ dependencies {
 
     compile "org.projectlombok:lombok:$lombokVersion"
 
-    compile "com.amazonaws:aws-java-sdk:$awsSdkVersion"
+    compile "com.amazonaws:aws-java-sdk-s3:$awsS3SdkVersion"
 
     testCompile "junit:junit:$junitVersion"
 }

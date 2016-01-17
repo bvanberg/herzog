@@ -29,8 +29,7 @@ Example usage:
 
 From the project root `herzog/api`
 
-`./gradlew clean build shadow; java -jar root.jar server dev.yaml -Daws.accessKeyId={your-jackbyrd-aws-access-key} -Daws.secretKey={your-jackbyrd-aws-secret-key}`
-
+`./gradlew clean build shadow; java -Daws.accessKeyId={your-jackbyrd-aws-access-key} -Daws.secretKey={your-jackbyrd-aws-secret-key} -jar root.jar server dev.yaml`
 
 
 ## Test it

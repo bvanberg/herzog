@@ -15,7 +15,9 @@ targetCompatibility = 1.8
 
 ext {
     dropwizardVersion = '0.9.1'
+    dropwizardGuiceVersion = '0.8.4.0'
     lombokVersion = '1.16.6'
+    awsS3SdkVersion = '1.10.47'
     junitVersion = '4.12'
 }
 
@@ -29,7 +31,11 @@ dependencies {
     compile "io.dropwizard:dropwizard-jdbi:$dropwizardVersion"
     compile "io.dropwizard:dropwizard-migrations:$dropwizardVersion"
 
+    compile "com.hubspot.dropwizard:dropwizard-guice:$dropwizardGuiceVersion"
+
     compile "org.projectlombok:lombok:$lombokVersion"
+
+    compile "com.amazonaws:aws-java-sdk-s3:$awsS3SdkVersion"
 
     testCompile "junit:junit:$junitVersion"
 }

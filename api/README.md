@@ -26,9 +26,11 @@ Example usage:
 `http://localhost:8080/identification/photos?page=4&pageSize=3`
 
 ## Run it
+
 From the project root `herzog/api`
 
-`./gradlew clean build shadow; java -jar root.jar server dev.yaml`
+`./gradlew clean build shadow; java -Daws.accessKeyId={your-jackbyrd-aws-access-key} -Daws.secretKey={your-jackbyrd-aws-secret-key} -jar root.jar server dev.yaml`
+
 
 ## Test it
 `http://localhost:8080/identification?name=herzog`
@@ -37,6 +39,6 @@ From the project root `herzog/api`
 
 From the project root `herzog/api`
 
-`curl -v --header "Content-Type: application/octet-stream" --request POST --data-binary "@coffee-mug.jpg" localhost:8080/identification?fileId=1234567890`
+`curl -v --header "Content-Type: binary/octet-stream" --request POST --data-binary "@coffee-mug.jpg" localhost:8080/identification?fileId=1234567890`
 
 Note the response headers contain the total bytes of the image along with the `fileId` sent in. This is just an example of how we might post an image. multipart may or may not be better.

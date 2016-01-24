@@ -17,6 +17,7 @@ ext {
     dropwizardVersion = '0.9.1'
     lombokVersion = '1.16.6'
     junitVersion = '4.12'
+    awsSdkVersion = '1.10.47'
 }
 
 repositories {
@@ -30,6 +31,8 @@ dependencies {
     compile "io.dropwizard:dropwizard-migrations:$dropwizardVersion"
 
     compile "org.projectlombok:lombok:$lombokVersion"
+
+    compile "com.amazonaws:aws-java-sdk-s3:$awsSdkVersion"
 
     testCompile "junit:junit:$junitVersion"
 }

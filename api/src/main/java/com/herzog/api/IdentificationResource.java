@@ -1,7 +1,9 @@
 package com.herzog.api;
 
+import com.herzog.api.photo.UniquePhotoKey;
 import com.herzog.api.photo.store.Photo;
 import com.herzog.api.photo.store.PhotoStore;
+import com.herzog.api.s3.PresignedUrl;
 import io.dropwizard.jersey.params.IntParam;
 import lombok.extern.slf4j.Slf4j;
 
@@ -79,4 +81,10 @@ public class IdentificationResource {
         fileInputStream.close();
         return bytes;
     }
+
+	@GET
+	@Path("photo/url")
+	public String getPresignedUrl() {
+		return PresignedUrl.from(UniquePhotoKey.get()).toString();
+	}
 }

@@ -1,8 +1,10 @@
 package com.herzog.api;
 
+import com.herzog.api.photo.UniquePhotoKey;
 import com.google.inject.Inject;
 import com.herzog.api.photo.store.Photo;
 import com.herzog.api.photo.store.PhotoStore;
+import com.herzog.api.s3.PresignedUrl;
 import com.herzog.api.service.S3Service;
 import io.dropwizard.jersey.params.IntParam;
 import lombok.extern.slf4j.Slf4j;
@@ -51,10 +53,8 @@ public class IdentificationResource {
 
     @GET
     @Path("photos")
-    public PhotoList fetch(
-            @QueryParam("page") @DefaultValue("1") IntParam page,
-            @QueryParam("pageSize") @DefaultValue("10") IntParam pageSize
-    ) {
+    public PhotoList fetch(@QueryParam("page") @DefaultValue("1") IntParam page,
+                           @QueryParam("pageSize") @DefaultValue("10") IntParam pageSize) {
         final Collection<Photo> notifications = photoStore.getPhotoPage(page.get(), pageSize.get());
 
         if (notifications != null) {
@@ -66,12 +66,9 @@ public class IdentificationResource {
 
     @POST
     @Consumes("binary/octet-stream")
-    public Response putFile(
-            @Context HttpServletRequest request,
-            @QueryParam("fileId") long fileId,
-            InputStream fileInputStream
-    ) throws Throwable {
-
+    public Response putFile(@Context HttpServletRequest request,
+                            @QueryParam("fileId") long fileId,
+                            InputStream fileInputStream) throws Throwable {
         long bytes = getBytes(fileInputStream);
         return Response.created(UriBuilder.fromResource(IdentificationResource.class).build())
                 .header("total-bytes", bytes)
@@ -91,4 +88,10 @@ public class IdentificationResource {
         fileInputStream.close();
         return bytes;
     }
+
+	@GET
+	@Path("photo/url")
+	public String getPresignedUrl() {
+		return PresignedUrl.from(UniquePhotoKey.get()).toString();
+	}
 }

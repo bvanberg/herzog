@@ -40,17 +40,6 @@ public class IdentificationResource {
         photoStore = PhotoStore.builder().build();
     }
 
-//    @GET
-//    @Path("photos")
-//    public PhotoList fetch() {
-//        final Collection<Photo> notifications = photoStore.getPhotoList();
-//        if (notifications != null) {
-//            final PhotoList photoList = PhotoList.builder().photos(notifications).build();
-//            return photoList;
-//        }
-//        throw new WebApplicationException(Response.Status.NOT_FOUND);
-//    }
-
     @GET
     @Path("photos")
     public PhotoList fetch(@QueryParam("page") @DefaultValue("1") IntParam page,
@@ -94,4 +83,16 @@ public class IdentificationResource {
 	public String getPresignedUrl() {
 		return PresignedUrl.from(UniquePhotoKey.get()).toString();
 	}
+
+    //    @GET
+  //    @Path("photos")
+  //    public PhotoList fetch() {
+  //        final Collection<Photo> notifications = photoStore.getPhotoList();
+  //        if (notifications != null) {
+  //            final PhotoList photoList = PhotoList.builder().photos(notifications).build();
+  //            return photoList;
+  //        }
+  //        throw new WebApplicationException(Response.Status.NOT_FOUND);
+  //    }
+
 }

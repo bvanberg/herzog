@@ -12,12 +12,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class IdentificationConfiguration extends Configuration {
 
-	@JsonProperty
-	private String template;
+    @JsonProperty
+    private String template;
 
-	@JsonProperty
-	private String defaultName = "Stranger";
+    @JsonProperty
+    private String defaultName = "Stranger";
 
-	@JsonProperty
-	private String photoBucket;
+    @JsonProperty
+    private String photoBucket;
 }

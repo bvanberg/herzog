@@ -1,14 +1,21 @@
 package com.herzog.api;
 
 import com.google.inject.Inject;
-import com.herzog.api.service.S3Service;
 import com.herzog.api.photo.store.Photo;
 import com.herzog.api.photo.store.PhotoStore;
+import com.herzog.api.service.S3Service;
 import io.dropwizard.jersey.params.IntParam;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.*;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -23,12 +30,12 @@ import java.util.Collection;
 public class IdentificationResource {
 
     private final PhotoStore photoStore;
-	private final S3Service s3Service;
+    private final S3Service s3Service;
 
-	@Inject
+    @Inject
     public IdentificationResource(final S3Service s3Service) {
-		this.s3Service = s3Service;
-		photoStore = PhotoStore.builder().build();
+        this.s3Service = s3Service;
+        photoStore = PhotoStore.builder().build();
     }
 
 //    @GET
@@ -45,9 +52,9 @@ public class IdentificationResource {
     @GET
     @Path("photos")
     public PhotoList fetch(
-			@QueryParam("page") @DefaultValue("1") IntParam page,
-		   	@QueryParam("pageSize") @DefaultValue("10") IntParam pageSize
-	) {
+            @QueryParam("page") @DefaultValue("1") IntParam page,
+            @QueryParam("pageSize") @DefaultValue("10") IntParam pageSize
+    ) {
         final Collection<Photo> notifications = photoStore.getPhotoPage(page.get(), pageSize.get());
 
         if (notifications != null) {
@@ -60,10 +67,10 @@ public class IdentificationResource {
     @POST
     @Consumes("binary/octet-stream")
     public Response putFile(
-			@Context HttpServletRequest request,
+            @Context HttpServletRequest request,
             @QueryParam("fileId") long fileId,
-			InputStream fileInputStream
-	) throws Throwable {
+            InputStream fileInputStream
+    ) throws Throwable {
 
         long bytes = getBytes(fileInputStream);
         return Response.created(UriBuilder.fromResource(IdentificationResource.class).build())
@@ -76,7 +83,7 @@ public class IdentificationResource {
         final byte[] buffer = new byte[1024];
         long bytes = 0;
         int bytesRead = fileInputStream.read(buffer);
-        while(bytesRead != -1) {
+        while (bytesRead != -1) {
             bytes += bytesRead;
             log.info("Bytes read: {}, Total bytes read: {}", bytesRead, bytes);
             bytesRead = fileInputStream.read(buffer);

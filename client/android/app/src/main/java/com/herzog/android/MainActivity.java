@@ -4,22 +4,23 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.provider.MediaStore;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
-
 import android.widget.Toast;
-import com.herzog.android.zxing.CaptureActivity;
-import com.herzog.android.zxing.ResultHandler;
+import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.InputStreamEntity;
+import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 /**
  * Sample driver class to demonstrate the use of CameraPreview class. This contains UI controls
@@ -28,7 +29,7 @@ import java.io.*;
 public class MainActivity extends ActionBarActivity implements View.OnClickListener {
 
 	private final String WS_BASE = "http://172.16.1.16:8080";
-	private final String IDENTIFICATION_ENDPOINT = "/identification";
+	private final String PHOTO_URL_ENDPOINT = "/identification/photo/url";
 
 	/**
 	 * request code for image capture to check on handling intent result
@@ -142,7 +143,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		// TODO check if this is sufficient for clean up. Older Android versions do have an issue with memory handling related to bitmaps
+		// TODO check if this is sufficient for clean up.
+		// TODO: Older Android versions do have an issue with memory handling related to bitmaps
 		if (mBitmap != null && !mBitmap.isRecycled())
 			mBitmap.recycle();
 		mBitmap = null;
@@ -151,31 +153,50 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
 	class UploadTask extends AsyncTask<File, Void, HttpResponse> {
 
-		private Exception exception;
+		private Throwable throwable;
 		private File photo = null;
+		final ResponseHandler<String> handler = new BasicResponseHandler();
 
 		protected HttpResponse doInBackground(File... files) {
 
-			HttpResponse response = null;
+			HttpResponse response;
+			OutputStream os = null;
+			InputStream is = null;
 
 			photo = files[0];
 
 			try {
 				final HttpClient httpclient = new DefaultHttpClient();
+				final HttpGet get = new HttpGet(WS_BASE + PHOTO_URL_ENDPOINT);
 
-				HttpPost post = new HttpPost(WS_BASE + IDENTIFICATION_ENDPOINT);
+				response = httpclient.execute(get);
 
-				final InputStreamEntity reqEntity = new InputStreamEntity(new FileInputStream(photo), -1);
-				reqEntity.setContentType("binary/octet-stream");
-				reqEntity.setChunked(true); // Send in multiple parts if needed
-				post.setEntity(reqEntity);
-				response = httpclient.execute(post);
+				final String preSignedUrl = handler.handleResponse(response);
 
-			} catch (Exception e) {
+				final URL preSignedUrlForUpload = new URL(preSignedUrl);
+				final HttpURLConnection connection = (HttpURLConnection) preSignedUrlForUpload.openConnection();
+				connection.setDoOutput(true);
+				connection.setRequestMethod("PUT");
+				connection.setRequestProperty("Content-Type", "binary/octet-stream");
+				is = new FileInputStream(photo);
+				os = connection.getOutputStream();
+
+				final int bytesCopied = IOUtils.copy(is, os);
+				Log.i("UploadTask - ", "Photo File Size: " + (bytesCopied / 1024));
+
+				os.flush();
+
+				int responseCode = connection.getResponseCode();
+				Log.i("UploadTask - ", "AWS S3 Upload Response: " + responseCode);
+
+			} catch (final Throwable e) {
 				// show error
 				Log.e("JsonClient.uploadFile", e.getMessage(), e);
-				this.exception = e;
-				return null;
+				this.throwable = e;
+				response = null;
+			} finally {
+				IOUtils.closeQuietly(is);
+				IOUtils.closeQuietly(os);
 			}
 
 			return response;

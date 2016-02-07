@@ -26,6 +26,7 @@ public class PresignedUrl {
         GeneratePresignedUrlRequest generatePresignedUrlRequest = new GeneratePresignedUrlRequest(BUCKET_NAME, key);
         generatePresignedUrlRequest.setMethod(HttpMethod.PUT);
         generatePresignedUrlRequest.setExpiration(expiration);
+        generatePresignedUrlRequest.withContentType("binary/octet-stream");
 
         return S3_CLIENT.generatePresignedUrl(generatePresignedUrlRequest);
     }

@@ -3,8 +3,8 @@ Project Dependencies and Configuration
 A few notes on IntelliJ configuration for this project that'll be required for annotations to be processed properly and make IntelliJ happy.
 
 #### Enable Annotation Processing
-	Preferences --> Build, Execution, Deployment --> Annotation Processors (check Enable annotation processing checkbox).
-	
+Preferences --> Build, Execution, Deployment --> Annotation Processors (check Enable annotation processing checkbox).
+
 #### Plugins
 
 Download and Install the Lombok Plugin
@@ -40,3 +40,7 @@ From the project root `herzog/api`
 `curl -v --header "Content-Type: binary/octet-stream" --request POST --data-binary "@src/test/resources/coffee-mug.jpg" localhost:8080/identification?fileId=1234567890`
 
 Note the response headers contain the total bytes of the image along with the `fileId` sent in. This is just an example of how we might post an image. multipart may or may not be better.
+
+### Test posting of metadata
+
+`curl -H "Content-Type: application/json" -X POST -d '{"metadata":{"key1":"value1","key2":"value2"}}' http://localhost:8080/identification/photo/metadata`

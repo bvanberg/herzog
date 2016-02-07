@@ -1,4 +1,4 @@
-package com.herzog.s3;
+package com.herzog.api.s3;
 
 import com.herzog.api.photo.UniquePhotoKey;
 import com.herzog.api.s3.PresignedUrl;
@@ -23,7 +23,7 @@ public class PreSignedUrlTest {
         final URL preSignedUrlForUpload = PresignedUrl.from(s3Filename);
 
         // run test
-        final HttpURLConnection connection=(HttpURLConnection) preSignedUrlForUpload.openConnection();
+        final HttpURLConnection connection = (HttpURLConnection) preSignedUrlForUpload.openConnection();
         connection.setDoOutput(true);
         connection.setRequestMethod("PUT");
 

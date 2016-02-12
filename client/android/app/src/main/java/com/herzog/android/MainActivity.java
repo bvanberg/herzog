@@ -28,7 +28,7 @@ import java.net.URL;
  */
 public class MainActivity extends ActionBarActivity implements View.OnClickListener {
 
-	private final String WS_BASE = "http://172.16.1.16:8080";
+	private final String WS_BASE = "http://photoid-env.elasticbeanstalk.com";
 	private final String PHOTO_URL_ENDPOINT = "/identification/photo/url";
 
 	/**

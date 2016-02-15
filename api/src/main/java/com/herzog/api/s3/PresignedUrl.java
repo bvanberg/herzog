@@ -1,7 +1,6 @@
 package com.herzog.api.s3;
 
 import com.amazonaws.HttpMethod;
-import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
@@ -17,7 +16,7 @@ import java.util.Date;
  * TODO: proper dependencies.
  */
 public class PresignedUrl {
-    private static final AmazonS3 S3_CLIENT = new AmazonS3Client(new ProfileCredentialsProvider());
+    private static final AmazonS3 S3_CLIENT = new AmazonS3Client();
     private static final String BUCKET_NAME = "herzog-photos";
 
     public static URL from(final String key) {

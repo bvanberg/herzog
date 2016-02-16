@@ -6,4 +6,4 @@ server:
   - type: http
     port: 5001
 
-photoBucket: com.jackbyrd.herzog.photos
+photoBucket: herzog-photos

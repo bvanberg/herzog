@@ -3,6 +3,7 @@ package com.herzog.api.s3;
 import com.amazonaws.HttpMethod;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
+import com.google.inject.name.Named;
 import org.joda.time.DateTime;
 
 import javax.inject.Inject;
@@ -14,19 +15,19 @@ import java.util.Date;
  */
 public class PresignedUrl {
 
-    private static final String BUCKET_NAME = "herzog-photos";
-
     private final AmazonS3 amazonS3;
+    private final String photoBucket;
 
     @Inject
-    public PresignedUrl(AmazonS3 amazonS3) {
+    public PresignedUrl(final AmazonS3 amazonS3, final @Named("photoBucket") String photoBucket) {
         this.amazonS3 = amazonS3;
+        this.photoBucket = photoBucket;
     }
 
     public URL from(final String key) {
         java.util.Date expiration = getExpiration();
 
-        GeneratePresignedUrlRequest generatePresignedUrlRequest = new GeneratePresignedUrlRequest(BUCKET_NAME, key);
+        GeneratePresignedUrlRequest generatePresignedUrlRequest = new GeneratePresignedUrlRequest(photoBucket, key);
         generatePresignedUrlRequest.setMethod(HttpMethod.PUT);
         generatePresignedUrlRequest.setExpiration(expiration);
         generatePresignedUrlRequest.withContentType("binary/octet-stream");

@@ -20,7 +20,7 @@ public class PreSignedUrlTest {
         // setup test
         final String filename = "coffee-mug.jpg";
         final String s3Filename = UniquePhotoKey.get() + filename.substring(filename.lastIndexOf("."));
-        PresignedUrl presignedUrl = new PresignedUrl(new AmazonS3Client());
+        final PresignedUrl presignedUrl = new PresignedUrl(new AmazonS3Client(), "herzog-photos");
         final URL preSignedUrlForUpload = presignedUrl.from(s3Filename);
 
         // run test

@@ -1,7 +1,7 @@
 package com.herzog.api.s3;
 
+import com.amazonaws.services.s3.AmazonS3Client;
 import com.herzog.api.photo.UniquePhotoKey;
-import com.herzog.api.s3.PresignedUrl;
 import org.apache.commons.io.IOUtils;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -20,7 +20,8 @@ public class PreSignedUrlTest {
         // setup test
         final String filename = "coffee-mug.jpg";
         final String s3Filename = UniquePhotoKey.get() + filename.substring(filename.lastIndexOf("."));
-        final URL preSignedUrlForUpload = PresignedUrl.from(s3Filename);
+        PresignedUrl presignedUrl = new PresignedUrl(new AmazonS3Client());
+        final URL preSignedUrlForUpload = presignedUrl.from(s3Filename);
 
         // run test
         final HttpURLConnection connection = (HttpURLConnection) preSignedUrlForUpload.openConnection();

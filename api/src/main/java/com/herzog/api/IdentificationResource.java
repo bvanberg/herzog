@@ -1,11 +1,10 @@
 package com.herzog.api;
 
-import com.herzog.api.photo.UniquePhotoKey;
 import com.google.inject.Inject;
+import com.herzog.api.photo.UniquePhotoKey;
 import com.herzog.api.photo.store.Photo;
 import com.herzog.api.photo.store.PhotoStore;
 import com.herzog.api.s3.PresignedUrl;
-import com.herzog.api.service.S3Service;
 import io.dropwizard.jersey.params.IntParam;
 import lombok.extern.slf4j.Slf4j;
 
@@ -32,12 +31,12 @@ import java.util.Collection;
 public class IdentificationResource {
 
     private final PhotoStore photoStore;
-    private final S3Service s3Service;
+    private final PresignedUrl presignedUrl;
 
     @Inject
-    public IdentificationResource(final S3Service s3Service) {
-        this.s3Service = s3Service;
-        photoStore = PhotoStore.builder().build();
+    public IdentificationResource(final PresignedUrl presignedUrl) {
+        this.presignedUrl = presignedUrl;
+        this.photoStore = PhotoStore.builder().build();
     }
 
     @GET
@@ -81,7 +80,7 @@ public class IdentificationResource {
 	@GET
 	@Path("photo/url")
 	public String getPresignedUrl() {
-		return PresignedUrl.from(UniquePhotoKey.get()).toString();
+		return presignedUrl.from(UniquePhotoKey.get()).toString();
 	}
 
     //    @GET

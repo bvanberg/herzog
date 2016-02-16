@@ -182,7 +182,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 				os = connection.getOutputStream();
 
 				final int bytesCopied = IOUtils.copy(is, os);
-				Log.i("UploadTask - ", "Photo File Size: " + (bytesCopied / 1024));
+				Log.i("UploadTask - ", "Photo File Size: " + (bytesCopied / 1024) + "KB");
 
 				os.flush();
 

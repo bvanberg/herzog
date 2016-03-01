@@ -1,6 +1,7 @@
 package com.herzog.api;
 
 import com.google.inject.Inject;
+import com.herzog.api.command.PhotoMetadataCommand;
 import com.herzog.api.photo.UniquePhotoKey;
 import com.herzog.api.photo.store.Photo;
 import com.herzog.api.photo.store.PhotoMetadata;
@@ -86,12 +87,23 @@ public class IdentificationResource {
         return PresignedUrl.from(UniquePhotoKey.get()).toString();
     }
 
+    @GET
+    @Path("photo/metadata")
+    public PhotoMetadata getMetadata() {
+        return PhotoMetadata.builder()
+                .metadata("key1", "value1")
+                .metadata("key2", "value2")
+                .photoKeys("key1")
+                .photoKeys("key2")
+                .userId("user")
+                .build();
+    }
+
     @POST
     @Path("photo/metadata")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response putMetadata(@Valid final PhotoMetadata metadata) throws Throwable {
-        // TODO: do something fun with the metadata
-        log.info("Got some metadata {}", metadata);
+        final boolean success = new PhotoMetadataCommand(metadata).run();
 
         // TODO: flesh out this response. currently just reflect back the input.
         Response.ResponseBuilder response =
@@ -99,6 +111,7 @@ public class IdentificationResource {
 
         metadata.getMetadata().entrySet().stream()
                 .forEach(e -> response.header(e.getKey(), e.getValue()));
+        response.header("success", success);
 
         return response.build();
     }

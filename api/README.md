@@ -43,4 +43,4 @@ Note the response headers contain the total bytes of the image along with the `f
 
 ### Test posting of metadata
 
-`curl -H "Content-Type: application/json" -X POST -d '{"metadata":{"key1":"value1","key2":"value2"}}' http://localhost:8080/identification/photo/metadata`
+`curl -v -H "Content-Type: application/json" -X POST -d '{"metadata":{"key1":"value1","key2":"value2"},"photoKeys":["key1","key2"],"userId":"user"}' http://localhost:8080/identification/photo/metadata`

@@ -184,3 +184,8 @@ Refined sample driver activities.
 * CameraPreviewSampleActivity.java -- Driver Activity to demonstrate the usage of CameraPreview.java.
 * CameraPreviewTestActivity.java -- Driver Activity for testing CameraPreview.java.
 * ResizableCameraPreview.java -- Extended class of CameraPreview allowing user to specify the preview size, for the purpose of testing.
+
+
+#### Hardware Fingerprint Ideas
+
+http://stackoverflow.com/questions/2785485/is-there-a-unique-android-device-id/2785493#2785493

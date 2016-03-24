@@ -6,12 +6,11 @@ import com.herzog.api.photo.UniquePhotoKey;
 import com.herzog.api.photo.store.Photo;
 import com.herzog.api.photo.store.PhotoMetadata;
 import com.herzog.api.photo.store.PhotoStore;
+import com.herzog.api.s3.ItemUrl;
 import com.herzog.api.s3.PresignedUrl;
-import com.herzog.api.service.S3Service;
 import io.dropwizard.jersey.params.IntParam;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
@@ -21,12 +20,9 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Collection;
 
 @Path("/identification")
@@ -35,14 +31,19 @@ import java.util.Collection;
 public class IdentificationResource {
 
     private final PhotoStore photoStore;
-    private final S3Service s3Service;
 
     @Inject
-    public IdentificationResource(final S3Service s3Service) {
-        this.s3Service = s3Service;
+    public IdentificationResource() {
         photoStore = PhotoStore.builder().build();
     }
 
+    /**
+     * Fetch and page photos endpoint. Added to support initial mockup of identification stream.
+     *
+     * @param page Page number to return.
+     * @param pageSize Page size to return.
+     * @return Paged results.
+     */
     @GET
     @Path("photos")
     public PhotoList fetch(@QueryParam("page") @DefaultValue("1") IntParam page,
@@ -56,37 +57,26 @@ public class IdentificationResource {
         throw new WebApplicationException(Response.Status.NOT_FOUND);
     }
 
-    @POST
-    @Consumes("binary/octet-stream")
-    public Response putFile(@Context HttpServletRequest request,
-                            @QueryParam("fileId") long fileId,
-                            InputStream fileInputStream) throws Throwable {
-        long bytes = getBytes(fileInputStream);
-        return Response.created(UriBuilder.fromResource(IdentificationResource.class).build())
-                .header("total-bytes", bytes)
-                .header("fileId", fileId)
+    /**
+     * First step in submitting items. Returns the presigned url for uploading the item along with the key for the item.
+     *
+     * @return Presigned URL response.
+     */
+    @GET
+    @Path("photo/url")
+    public ItemUrl getPresignedUrl() {
+        final String key = UniquePhotoKey.get();
+        return ItemUrl.builder()
+                .presignedUrl(PresignedUrl.from(key).toString())
+                .key(key)
                 .build();
     }
 
-    private long getBytes(InputStream fileInputStream) throws IOException {
-        final byte[] buffer = new byte[1024];
-        long bytes = 0;
-        int bytesRead = fileInputStream.read(buffer);
-        while (bytesRead != -1) {
-            bytes += bytesRead;
-            log.info("Bytes read: {}, Total bytes read: {}", bytesRead, bytes);
-            bytesRead = fileInputStream.read(buffer);
-        }
-        fileInputStream.close();
-        return bytes;
-    }
-
-    @GET
-    @Path("photo/url")
-    public String getPresignedUrl() {
-        return PresignedUrl.from(UniquePhotoKey.get()).toString();
-    }
-
+    /**
+     * Return metadata. TODO: Might be nice to return the metadata for a certain key.
+     *
+     * @return Photo metadata.
+     */
     @GET
     @Path("photo/metadata")
     public PhotoMetadata getMetadata() {
@@ -99,6 +89,13 @@ public class IdentificationResource {
                 .build();
     }
 
+    /**
+     * Second step in submitting items. Posts the item metadata which persists metadata associated with item artifacts.
+     *
+     * @param metadata Photo metadata payload.
+     * @return Response.
+     * @throws Throwable
+     */
     @POST
     @Path("photo/metadata")
     @Consumes(MediaType.APPLICATION_JSON)

@@ -32,7 +32,7 @@ Example usage:
 
 Example usage: 
 
-`curl http://localhost:8080/identification/url`
+`curl http://localhost:8080/identification/photo/url`
 
 Example response:
 

@@ -14,6 +14,15 @@ From the project root `herzog/api`
 
 `./gradlew clean build shadow; java -jar root.jar server dev.yaml`
 
+## Deploy it
+The API currently run on elastic beanstalk. This is controlled by two files; Procfile and Buildfile. beanstalk uses Buildfile to build the application JAR file from a source bundle containing the API source. beanstalk uses Procfile to execute the application. 
+
+1. Create the source bundle `herzog/api (master)$ git archive --format=zip HEAD > photo-id.zip`
+2. Deploy the source bundle from the AWS Elastic Beanstalk console `https://console.aws.amazon.com/elasticbeanstalk/home?region=us-east-1#/applications` 
+3. Select the environment you wish to deploy. (photo-id)
+4. Select `Upload and Deploy` and increment the version label (photo-id-nn)
+5. Select `Deploy`
+
 ## Endpoints
 
 ### GET `/identification/photos`

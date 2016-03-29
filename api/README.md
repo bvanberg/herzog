@@ -9,9 +9,12 @@ Preferences --> Build, Execution, Deployment --> Annotation Processors (check En
 
 Download and Install the Lombok Plugin
 
-## Endpoints
+## Run it
+From the project root `herzog/api`
 
-### POST `/identification` -- Accepts a binary payload for processing .
+`./gradlew clean build shadow; java -jar root.jar server dev.yaml`
+
+## Endpoints
 
 ### GET `/identification/photos`
 
@@ -25,22 +28,45 @@ Example usage:
 
 `http://localhost:8080/identification/photos?page=4&pageSize=3`
 
-## Run it
-From the project root `herzog/api`
+### GET `/identification/photo/url`
 
-`./gradlew clean build shadow; java -jar root.jar server dev.yaml`
+Example usage: 
 
-## Test it
-`http://localhost:8080/identification?name=herzog`
+`curl http://localhost:8080/identification/photo/url`
 
-### Test posting of photo
+Example response:
 
-From the project root `herzog/api`
+```json
+{
+presignedUrl: "https://herzog-photos.s3.amazonaws.com/8caaccfd-37eb-4807-a2ad-2514d197b037?AWSAccessKeyId=AKIAI6HUYJLEME6L44TA&Expires=1458801265&Signature=BVbhmZ6A%2FfxneDmZXzgL1F3LuZg%3D",
+key: "8caaccfd-37eb-4807-a2ad-2514d197b037"
+}
+```
 
-`curl -v --header "Content-Type: binary/octet-stream" --request POST --data-binary "@src/test/resources/coffee-mug.jpg" localhost:8080/identification?fileId=1234567890`
+### GET `/identification/photo/metadata`
 
-Note the response headers contain the total bytes of the image along with the `fileId` sent in. This is just an example of how we might post an image. multipart may or may not be better.
+Example usage: 
 
-### Test posting of metadata
+`curl http://localhost:8080/identification/photo/metadata`
+
+Example response: 
+
+```json
+{
+metadata: {
+key1: "value1",
+key2: "value2"
+},
+photoKeys: [
+"key1",
+"key2"
+],
+userId: "user"
+}
+```
+
+### POST `/identification/photo/metadata`
+
+Example usage: 
 
 `curl -v -H "Content-Type: application/json" -X POST -d '{"metadata":{"key1":"value1","key2":"value2"},"photoKeys":["key1","key2"],"userId":"user"}' http://localhost:8080/identification/photo/metadata`

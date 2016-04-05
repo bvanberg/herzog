@@ -45,12 +45,10 @@ Example usage:
 
 Example response:
 
-```json
-{
-presignedUrl: "https://herzog-photos.s3.amazonaws.com/8caaccfd-37eb-4807-a2ad-2514d197b037?AWSAccessKeyId=AKIAI6HUYJLEME6L44TA&Expires=1458801265&Signature=BVbhmZ6A%2FfxneDmZXzgL1F3LuZg%3D",
-key: "8caaccfd-37eb-4807-a2ad-2514d197b037"
-}
-```
+    {
+        presignedUrl: "https://herzog-photos.s3.amazonaws.com/8caaccfd-37eb-4807-a2ad-2514d197b037?AWSAccessKeyId=AKIAI6HUYJLEME6L44TA&Expires=1458801265&Signature=BVbhmZ6A%2FfxneDmZXzgL1F3LuZg%3D",
+        key: "8caaccfd-37eb-4807-a2ad-2514d197b037"
+    }
 
 ### GET `/identification/photo/metadata`
 
@@ -60,19 +58,17 @@ Example usage:
 
 Example response: 
 
-```json
-{
-metadata: {
-key1: "value1",
-key2: "value2"
-},
-photoKeys: [
-"key1",
-"key2"
-],
-userId: "user"
-}
-```
+    {
+        metadata: {
+            key1: "value1",
+            key2: "value2"
+        },
+        photoKeys: [
+            "key1",
+            "key2"
+        ],
+        userId: "user"
+    }
 
 ### POST `/identification/photo/metadata`
 

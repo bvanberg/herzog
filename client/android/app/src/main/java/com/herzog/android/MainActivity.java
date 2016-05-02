@@ -1,26 +1,39 @@
 package com.herzog.android;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.herzog.android.bean.ItemUrl;
+import com.herzog.android.bean.PhotoCapture;
+import com.herzog.android.bean.PhotoMetadata;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Sample driver class to demonstrate the use of CameraPreview class. This contains UI controls
@@ -28,202 +41,252 @@ import java.net.URL;
  */
 public class MainActivity extends ActionBarActivity implements View.OnClickListener {
 
-	private final String WS_BASE = "http://photoid-env.elasticbeanstalk.com";
-	private final String PHOTO_URL_ENDPOINT = "/identification/photo/url";
+    private final String WS_BASE = "http://photoid-env.elasticbeanstalk.com";
+    private final String PHOTO_URL_ENDPOINT = "/identification/photo/url";
+    private final String META_DATA_URL_ENDPOINT = "/identification/photo/metadata";
 
-	/**
-	 * request code for image capture to check on handling intent result
-	 */
-	private static final int REQUEST_IMAGE_CAPTURE = 1;
+    final ObjectMapper objectMapper = new ObjectMapper();
 
-	/**
-	 * the only bitmap so we can keep track of it and recycle if needed
-	 */
-	private Bitmap mBitmap = null;
+    /**
+     * request code for image capture to check on handling intent result
+     */
+    private static final int REQUEST_IMAGE_CAPTURE = 1;
 
-	/**
-	 * an imageview to show the taken picture
-	 */
-	private ImageView mImageView = null;
+    /**
+     * the only bitmap so we can keep track of it and recycle if needed
+     */
+    private Bitmap mBitmap = null;
 
 
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        this.setContentView(R.layout.main);
+        findViewById(R.id.button_intent).setOnClickListener(this);
+   }
 
-		this.setContentView(R.layout.main);
+    @Override
+    public void onClick(View v) {
+        Intent intent;
+        switch (v.getId()) {
+            case R.id.button_intent:
+                dispatchTakePictureIntent();
+                break;
+        }
+    }
 
-//        findViewById(R.id.button_sample).setOnClickListener(this);
-//        findViewById(R.id.button_test).setOnClickListener(this);
-		findViewById(R.id.button_intent).setOnClickListener(this);
-//        findViewById(R.id.button_zxing).setOnClickListener(this);
+    /**
+     * helper to launch the capture intent
+     */
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        }
+    }
 
-//		mImageView = (ImageView) findViewById(R.id.imageView);
-	}
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-	@Override
-	public void onClick(View v) {
-		Intent intent;
-		switch (v.getId()) {
-//            case R.id.button_sample:
-//                intent = new Intent(this, CameraPreviewSampleActivity.class);
-//                startActivity(intent);
-//                break;
-//            case R.id.button_test:
-//                intent = new Intent(this, CameraPreviewTestActivity.class);
-//                startActivity(intent);
-//                break;
-			case R.id.button_intent:
-				dispatchTakePictureIntent();
-				break;
-//            case R.id.button_zxing:
-//                Intent i = new Intent(this, CaptureActivity.class);
-//                i.putExtra(CaptureActivity.KEY_INFO_TEXT, "some info text goes here");// TODO translate
-//                // TODO we should use activity for result
-//                //i.putExtra(CaptureActivity.KEY_RESULT_HANDLER, new ResultHandler(){
-//                //    @Override
-//                //    public void handleResult(Bundle data) {
-//                //        // TODO show data instead
-//                //    }
-//                //});
-//                startActivity(i);
-//
-//                break;
-		}
-	}
+        // here we get back the thumbnail of the taken picture
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
 
-	/**
-	 * helper to launch the capture intent
-	 */
-	private void dispatchTakePictureIntent() {
-		Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-		if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-			startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-		}
-	}
+            final Bundle extras = data.getExtras();
 
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		// here we get back the thumbnail of the taken picture
-		if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-			Bundle extras = data.getExtras();
-			// Since we used an intent the default camera app (user preferences) is used and
-			// the image is stored in gallery
-			mBitmap = (Bitmap) extras.get("data");
+            // Since we used an intent the default camera app (user preferences) is used and
+            // the image is stored in gallery
+            mBitmap = (Bitmap) extras.get("data");
 
-			// this sets the captured image to image view to view a thumbnail snap of it.
-			//mImageView.setImageBitmap(mBitmap);
+            if (mBitmap != null) {
 
-			if (mBitmap != null) {
+                OutputStream os = null;
+                final File photo = new File(this.getCacheDir(), "tmpPhoto");
+                try {
 
-				OutputStream os = null;
-				final File photo = new File(this.getCacheDir(), "tmpPhoto");
-				try {
+                    os = new BufferedOutputStream(new FileOutputStream(photo));
+                    mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
 
-					os = new BufferedOutputStream(new FileOutputStream(photo));
-					mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, os);
+                    // prompt user with dialog so they can enter a description
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setTitle("Photo Description");
 
-					new UploadTask().execute(photo);
+                    // Set up the input
+                    final EditText input = new EditText(this);
 
-				} catch (final Exception ex) {
-					Log.e("JsonClient.uploadFile", ex.getMessage(), ex);
-					Toast.makeText(
-							getApplicationContext(),
-							"Upload Error: " + ex.getMessage(),
-							Toast.LENGTH_LONG).show();
-				} finally {
-					if (os != null) try { os.close(); } catch (IOException io) {}
-				}
+                    // Specify the type of input expected; multi-line input text
+                    input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_POSTAL_ADDRESS | InputType.TYPE_TEXT_FLAG_MULTI_LINE);
+                    builder.setView(input);
 
-			}
-		}
+                    // Set up the buttons
+                    builder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            final String description = input.getText().toString();
+                            new SubmitPhotoTask().execute(new PhotoCapture(photo, description));
+                        }
+                    });
 
-	}
+                    builder.show();
 
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		// TODO check if this is sufficient for clean up.
-		// TODO: Older Android versions do have an issue with memory handling related to bitmaps
-		if (mBitmap != null && !mBitmap.isRecycled())
-			mBitmap.recycle();
-		mBitmap = null;
-	}
+                } catch (final Exception ex) {
+                    Log.e("JsonClient.uploadFile", ex.getMessage(), ex);
+                    Toast.makeText(
+                            getApplicationContext(),
+                            "Upload Error: " + ex.getMessage(),
+                            Toast.LENGTH_LONG).show();
+                } finally {
+                    if (os != null) try {
+                        os.close();
+                    } catch (IOException io) {
+                    }
+                }
+
+            }
+        }
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // TODO check if this is sufficient for clean up.
+        // TODO: Older Android versions do have an issue with memory handling related to bitmaps
+        if (mBitmap != null && !mBitmap.isRecycled())
+            mBitmap.recycle();
+        mBitmap = null;
+    }
 
 
-	class UploadTask extends AsyncTask<File, Void, HttpResponse> {
+    class SubmitPhotoTask extends AsyncTask<PhotoCapture, Void, HttpResponse> {
 
-		private Throwable throwable;
-		private File photo = null;
-		final ResponseHandler<String> handler = new BasicResponseHandler();
+        File photo = null;
 
-		protected HttpResponse doInBackground(File... files) {
+        HttpResponse response;
 
-			HttpResponse response;
-			OutputStream os = null;
-			InputStream is = null;
+        protected HttpResponse doInBackground(PhotoCapture... photoCapture) {
 
-			photo = files[0];
+            final PhotoCapture capture = photoCapture[0];
 
-			try {
-				final HttpClient httpclient = new DefaultHttpClient();
-				final HttpGet get = new HttpGet(WS_BASE + PHOTO_URL_ENDPOINT);
+            // grab the photo to upload to S3 via presigned url
+            photo = capture.getPhoto();
+            final String description = capture.getDescription();
 
-				response = httpclient.execute(get);
+            final String s3Key = upload(photo);
 
-				final String preSignedUrl = handler.handleResponse(response);
+            if (s3Key != null) {
+                response = postMetadata(s3Key, description);
+            }
 
-				final URL preSignedUrlForUpload = new URL(preSignedUrl);
-				final HttpURLConnection connection = (HttpURLConnection) preSignedUrlForUpload.openConnection();
-				connection.setDoOutput(true);
-				connection.setRequestMethod("PUT");
-				connection.setRequestProperty("Content-Type", "binary/octet-stream");
-				is = new FileInputStream(photo);
-				os = connection.getOutputStream();
+            return response;
 
-				final int bytesCopied = IOUtils.copy(is, os);
-				Log.i("UploadTask - ", "Photo File Size: " + (bytesCopied / 1024) + "KB");
+        }
 
-				os.flush();
+        protected void onPostExecute(HttpResponse response) {
+            // TODO: check this.exception
 
-				int responseCode = connection.getResponseCode();
-				Log.i("UploadTask - ", "AWS S3 Upload Response: " + responseCode);
+            Toast.makeText(
+                    getApplicationContext(),
+                    "Http Response Code: " + response.getStatusLine().getStatusCode(),
+                    Toast.LENGTH_LONG).show();
 
-			} catch (final Throwable e) {
-				// show error
-				Log.e("JsonClient.uploadFile", e.getMessage(), e);
-				this.throwable = e;
-				response = null;
-			} finally {
-				IOUtils.closeQuietly(is);
-				IOUtils.closeQuietly(os);
-			}
+            // clean up photo and original bitmap
+            if (photo != null && photo.exists()) {
+                Log.i("onPostExecute - ", "Deleted photo: " + photo.delete());
+            }
 
-			return response;
+            if (mBitmap != null && !mBitmap.isRecycled()) {
+                mBitmap.recycle();
+            }
 
-		}
+            mBitmap = null;
 
-		protected void onPostExecute(HttpResponse response) {
-			// TODO: check this.exception
+        }
 
-			Toast.makeText(
-					getApplicationContext(),
-					"Http Response Code: " + response.getStatusLine().getStatusCode(),
-					Toast.LENGTH_LONG).show();
+    }
 
-			// clean up photo and original bitmap
-			if (photo != null && photo.exists()) {
-				Log.i("onPostExecute - ", "Deleted photo: " + photo.delete());
-			}
+    private String upload(final File photo) {
 
-			if (mBitmap != null && !mBitmap.isRecycled()) {
-				mBitmap.recycle();
-			}
+        String s3KeyToReturn = null;
+        OutputStream os = null;
+        InputStream is = null;
 
-			mBitmap = null;
+        try {
+            final HttpClient httpclient = new DefaultHttpClient();
+            final ResponseHandler<String> handler = new BasicResponseHandler();
+            final HttpGet get = new HttpGet(WS_BASE + PHOTO_URL_ENDPOINT);
 
-		}
+            HttpResponse response = httpclient.execute(get);
 
-	}
+            final ItemUrl itemUrl = objectMapper.readValue(handler.handleResponse(response), ItemUrl.class);
+            final URL preSignedUrlForUpload = new URL(itemUrl.getPresignedUrl());
+            final HttpURLConnection connection = (HttpURLConnection) preSignedUrlForUpload.openConnection();
+            connection.setDoOutput(true);
+            connection.setRequestMethod("PUT");
+            connection.setRequestProperty("Content-Type", "binary/octet-stream");
+            is = new FileInputStream(photo);
+            os = connection.getOutputStream();
+
+            final int bytesCopied = IOUtils.copy(is, os);
+            Log.i("UploadTask - ", "Photo File Size: " + (bytesCopied / 1024) + "KB");
+
+            os.flush();
+
+            int responseCode = connection.getResponseCode();
+            Log.i("UploadTask - ", "AWS S3 Upload Response: " + responseCode);
+
+            if (response.getStatusLine().getStatusCode() != 200) {
+                Log.e(
+                    MainActivity.class.getName(),
+                    "S3 Upload failed, http response code was " + response.getStatusLine().getStatusCode()
+                );
+            } else {
+                s3KeyToReturn = itemUrl.getKey();
+            }
+
+        } catch (final Throwable e) {
+            // show error
+            Log.e("JsonClient.uploadFile", e.getMessage(), e);
+        } finally {
+            IOUtils.closeQuietly(is);
+            IOUtils.closeQuietly(os);
+        }
+
+        return s3KeyToReturn;
+    }
+
+
+    private HttpResponse postMetadata(final String s3Key, final String description) {
+
+        HttpResponse response = null;
+
+        try {
+
+            final HttpClient httpclient = new DefaultHttpClient();
+            HttpPost post = new HttpPost(WS_BASE + META_DATA_URL_ENDPOINT);
+
+            Map<String, String> metadata = new HashMap<String, String>();
+            metadata.put("description", description);
+
+            // todo: make these real values
+            final PhotoMetadata photoMetadata = new PhotoMetadata();
+            photoMetadata.setUserId("some_unique_user_id");
+            photoMetadata.setMetadata(metadata);
+            photoMetadata.setPhotoKeys(Arrays.asList(s3Key));
+
+            final String meta = objectMapper.writeValueAsString(photoMetadata);
+            Log.i(MainActivity.class.getName(), meta);
+            final StringEntity reqEntity = new StringEntity(meta);
+            reqEntity.setContentType("application/json");
+            post.setEntity(reqEntity);
+            response = httpclient.execute(post);
+
+        } catch (Exception e) {
+            // show error
+            Log.e("failed to post metadata", e.getMessage(), e);
+        }
+
+        return response;
+    }
+
 
 }

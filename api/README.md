@@ -1,3 +1,7 @@
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=7F4zd_NT7gs
+" target="_blank"><img src="http://img.youtube.com/vi/7F4zd_NT7gs/0.jpg" 
+alt="Jokers" width="240" height="180" border="10" /></a>
+
 Project Dependencies and Configuration
 ---
 A few notes on IntelliJ configuration for this project that'll be required for annotations to be processed properly and make IntelliJ happy.
@@ -45,11 +49,11 @@ Example usage:
 
 Example response:
 
-```json
-{
-presignedUrl: "https://herzog-photos.s3.amazonaws.com/8caaccfd-37eb-4807-a2ad-2514d197b037?AWSAccessKeyId=AKIAI6HUYJLEME6L44TA&Expires=1458801265&Signature=BVbhmZ6A%2FfxneDmZXzgL1F3LuZg%3D",
-key: "8caaccfd-37eb-4807-a2ad-2514d197b037"
-}
+```javascript
+  {
+    presignedUrl: "https://herzog-photos.s3.amazonaws.com/8caaccfd-37eb-4807-a2ad-2514d197b037?AWSAccessKeyId=AKIAI6HUYJLEME6L44TA&Expires=1458801265&Signature=BVbhmZ6A%2FfxneDmZXzgL1F3LuZg%3D",
+    key: "8caaccfd-37eb-4807-a2ad-2514d197b037"
+  }
 ```
 
 ### GET `/identification/photo/metadata`
@@ -60,18 +64,18 @@ Example usage:
 
 Example response: 
 
-```json
-{
-metadata: {
-key1: "value1",
-key2: "value2"
-},
-photoKeys: [
-"key1",
-"key2"
-],
-userId: "user"
-}
+```javascript
+  {
+    metadata: {
+      key1: "value1",
+      key2: "value2"
+    },
+    photoKeys: [
+      "key1",
+      "key2"
+    ],
+    userId: "user"
+  }
 ```
 
 ### POST `/identification/photo/metadata`
